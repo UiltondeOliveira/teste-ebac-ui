@@ -1,17 +1,17 @@
 /// <reference types="cypress" />
 import { faker } from '@faker-js/faker';
 
+let nomeFaker = faker.name.firstName()
+let sobrenomeFaker = faker.name.lastName()
+let emailFaker = faker.internet.email(nomeFaker + '.' + sobrenomeFaker)
+
 describe('Funcionalidade: Pré-cadastro', () => {
 
     beforeEach(() => {
         cy.visit("minha-conta/")
     });
 
-    it('Deve realizar o pré-cadastro com sucesso', () => { 
-        let nomeFaker = faker.name.firstName()
-        let sobrenomeFaker = faker.name.lastName()
-        let emailFaker = faker.internet.email(nomeFaker + '.' + sobrenomeFaker)
-        
+    it('Deve realizar o pré-cadastro com sucesso', () => {        
         cy.get('#reg_email').type(emailFaker)
         cy.get('#reg_password').type('teste@teste.com')
         cy.get(':nth-child(4) > .button').click()
@@ -22,7 +22,10 @@ describe('Funcionalidade: Pré-cadastro', () => {
         cy.get('.woocommerce-Button').click()
 
         cy.get('.woocommerce-message').should('contain','Detalhes da conta modificados com sucesso.')
+    });
 
-
+    it.only('Deve completar o pré-cadastro com sucesso - Usando comando customizado', () => {
+        cy.preCadastro(emailFaker, 'senha!@#forte', nomeFaker, sobrenomeFaker)
+        cy.get('.woocommerce-message').should('contain','Detalhes da conta modificados com sucesso.')
     });
 });
